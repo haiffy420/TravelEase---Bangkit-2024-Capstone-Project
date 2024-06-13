@@ -24,6 +24,8 @@ Welcome to the TravelEase Machine Learning Documentation. TravelEase is a mobile
     - [Recommender Function](#recommender-function)
     - [Dockerfile](#dockerfile)
   - [How to Run](#how-to-run)
+    - [Local](#local)
+    - [Docker](#docker)
   - [API Endpoints](#api-endpoints)
       - [Request body](#request-body)
       - [Example Value](#example-value)
@@ -271,12 +273,11 @@ CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "7860"]
 ```
 
 ## How to Run
-
+### Local
 1. Clone the repository:
     ```bash
-    git lfs install
-	git clone https://huggingface.co/spaces/haiffy/travelease
-    cd travelease
+	git clone https://github.com/haiffy420/TravelEase---Bangkit-2024-Capstone-Project.git
+    cd TravelEase---Bangkit-2024-Capstone-Project/travelease-deployment
     ```
 
 2. Install the required dependencies:
@@ -288,13 +289,17 @@ CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "7860"]
     ```bash
     uvicorn main:app --host 0.0.0.0 --port 7860
     ```
-
-4. Build and run the Docker container:
+### Docker
+1. Clone the repository:
+    ```bash
+	git clone https://github.com/haiffy420/TravelEase---Bangkit-2024-Capstone-Project.git
+    cd TravelEase---Bangkit-2024-Capstone-Project/travelease-deployment
+    ```
+2. Build and run the Docker container:
     ```bash
     docker build -t travelease .
     docker run -p 7860:7860 travelease
     ```
-
 ## API Endpoints
 
 - **GET /**: Returns a welcome message.
