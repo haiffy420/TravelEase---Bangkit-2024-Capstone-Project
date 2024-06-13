@@ -1,3 +1,12 @@
+---
+title: Travelease
+emoji: 📉
+colorFrom: blue
+colorTo: purple
+sdk: docker
+pinned: false
+---
+
 # TravelEase - Machine Learning Documentation
 
 Welcome to the TravelEase Machine Learning Documentation. TravelEase is a mobile application that provides a tourist attraction recommendation system based on user preferences. This document provides a comprehensive guide on the machine learning component of the TravelEase project.
@@ -50,7 +59,7 @@ This documentation focuses on the machine learning part of the project, which in
 
 | Name                              | Student ID    | Path                |
 | --------------------------------- | ------------- | ------------------- |
-| Haifan Tri Buwono Joyo Pangestu   | M693D4KY2338  | Machine Learning    |
+| Haifan Tri Buwono Joyo Pangestu   | M3142818      | Machine Learning    |
 | Nisrina Diva Sulalah              | M006D4KX2082  | Machine Learning    |
 | Ariqa Bilqis                      | M006D4KX2081  | Machine Learning    |
 
