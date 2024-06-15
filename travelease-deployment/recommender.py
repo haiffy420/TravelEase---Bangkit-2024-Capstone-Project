@@ -34,7 +34,7 @@ def recommender(
     k=5,
 ):
     # Filter dataframe based on specified city
-    city_items = items[items["City"] == city]
+    city_items = items[items["City"].str.lower() == city.lower()]
 
     # If the number of items after filtering is less than k, adjust k
     if len(city_items) < k:

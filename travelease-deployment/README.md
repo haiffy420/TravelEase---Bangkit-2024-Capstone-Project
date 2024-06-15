@@ -30,6 +30,7 @@ Welcome to the TravelEase Machine Learning Documentation. TravelEase is a mobile
     - [Recommendation Function](#recommendation-function)
   - [Model Deployment](#model-deployment)
     - [FastAPI Application](#fastapi-application)
+    - [Data Fetching](#data-fetching)
     - [Recommender Function](#recommender-function)
     - [Dockerfile](#dockerfile)
   - [How to Run](#how-to-run)
@@ -208,10 +209,11 @@ We deployed the model using FastAPI.
 ### FastAPI Application
 
 ```python
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 from pydantic import BaseModel
-import pandas as pd
+from typing import List, Optional
 from recommender import recommender
+from data import fetch_all_tourism, filter_tourism
 
 app = FastAPI()
 
@@ -219,6 +221,7 @@ class Item(BaseModel):
     categories: list
     city: str
     
+
 @app.post("/")
 def hello():
     return {"message": "TravelEase - All-in-One Trip Companion"}
@@ -229,6 +232,54 @@ async def recommend_places(item: Item):
     city = item.city
     recommendations = recommender(categories, city)
     return recommendations.to_dict(orient="records")
+
+@app.get("/tourism/")
+async def get_tourism_data(
+    name: Optional[str] = Query(None, description="Filter by place name"),
+    city: Optional[str] = Query(None, description="Filter by city"),
+    categories: Optional[List[str]] = Query(None, description="Filter by categories"),
+):
+    print(name, city, categories)
+    if not any([name, city, categories]):
+        data = fetch_all_tourism()
+    else:
+        data = filter_tourism(name, city, categories)
+    return data.to_dict(orient="records")
+```
+
+### Data Fetching
+
+```python
+import pandas as pd
+
+df = pd.read_csv("data/tourism.csv")
+
+
+def fetch_all_tourism():
+    return df
+
+
+def filter_tourism(name=None, city=None, categories=None):
+    filtered_df = df.copy()
+    if name:
+        filtered_df = filtered_df[
+            filtered_df["Place_Name"].str.contains(name, case=False, na=False)
+        ]
+    if city:
+        filtered_df = filtered_df[
+            filtered_df["City"].str.contains(city, case=False, na=False)
+        ]
+    if categories:
+        # Convert categories to lowercase for case-insensitive comparison
+        categories = [category.lower() for category in categories]
+        filtered_df["Category"] = filtered_df["Category"].str.lower()
+
+        # Filter by multiple categories
+        category_filter = filtered_df["Category"].apply(
+            lambda x: any(category in x for category in categories)
+        )
+        filtered_df = filtered_df[category_filter]
+    return filtered_df
 ```
 
 ### Recommender Function
@@ -312,6 +363,18 @@ CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "7860"]
 ## API Endpoints
 
 - **GET /**: Returns a welcome message.
+- **GET /tourism/**: Fetches tourism data with optional filters:
+
+name: Filter by place name.
+
+city: Filter by city.
+
+categories: Filter by categories.
+
+- Example Usage:
+```
+http://your_app_domain/tourism?name=taman&city=yogyakarta&categories=budaya&categories=cagar%20alam
+```
 
 - **POST /recommend/**: Returns recommended tourist destinations based on the input categories and city.
 #### Request body
@@ -361,6 +424,7 @@ Media type: `application/json`
 
 - Python 3.9
 - Pandas
+- Numpy
 - TensorFlow
 - Scikit-learn
 - FastAPI
